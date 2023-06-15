@@ -29,6 +29,15 @@ class Forecast {
   }
 }
 
+class Movie {
+  constructor(movieObj) {
+    this.title = movieObj.title;
+    this.overview = movieObj.overview;
+    
+
+  }
+}
+
 app.get('/weather', async (request, response, next)=>{
   try {
     let lat = request.query.lat;
@@ -50,6 +59,21 @@ app.get('/weather', async (request, response, next)=>{
   }
 });
 
+app.get('/movies', async (request, response, next) => {
+  try {
+    let keywordFromFront = request.query.searchQuery;
+
+    let url = `https://api.themoviedb.org/3/search/movie?api_key={$process.env.MOVIE_API_KEY}&query=${keywordFromFrontend}`;
+    let dataFromAxios = await axios.get(URL);
+
+    let dataToSend = dataFromAxios.data.results.map(movie => new Movie(movie));
+
+    response.status(200).send(dataFromAxios.data);
+  } catch(error){
+    next(error);
+  }
+});
+
 
 app.get('*', (request, response) => {
   response.status(404).send('Sorry, Page not found');
@@ -59,5 +83,3 @@ app.use((error, request, response, next) => {
   console.log(error.message);
   response.status(500).send(error.message);
 });
-
-wx.feelsLike
