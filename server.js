@@ -29,14 +29,13 @@ class Forecast {
   }
 }
 
-class Movie {
-  constructor(movieObj) {
-    this.title = movieObj.title;
-    this.overview = movieObj.overview;
-    
+// class Movie {
+//   constructor(movieObj) {
+//     this.title = movieObj.title;
+//     this.overview = movieObj.overview;
 
-  }
-}
+//   }
+// }
 
 app.get('/weather', async (request, response, next)=>{
   try {
@@ -59,20 +58,20 @@ app.get('/weather', async (request, response, next)=>{
   }
 });
 
-app.get('/movies', async (request, response, next) => {
-  try {
-    let keywordFromFront = request.query.searchQuery;
+// app.get('/movies', async (request, response, next) => {
+//   try {
+//     let keywordFromFront = request.query.searchQuery;
 
-    let url = `https://api.themoviedb.org/3/search/movie?api_key={$process.env.MOVIE_API_KEY}&query=${keywordFromFrontend}`;
-    let dataFromAxios = await axios.get(URL);
+//     let url = `https://api.themoviedb.org/3/search/movie?api_key={$process.env.MOVIE_API_KEY}&query=${keywordFromFrontend}`;
+//     let dataFromAxios = await axios.get(URL);
 
-    let dataToSend = dataFromAxios.data.results.map(movie => new Movie(movie));
+//     let dataToSend = dataFromAxios.data.results.map(movie => new Movie(movie));
 
-    response.status(200).send(dataFromAxios.data);
-  } catch(error){
-    next(error);
-  }
-});
+//     response.status(200).send(dataFromAxios.data);
+//   } catch(error){
+//     next(error);
+//   }
+// });
 
 
 app.get('*', (request, response) => {
