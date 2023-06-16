@@ -8,7 +8,7 @@ const cors = require('cors');
 const app = express();
 
 const corsOptions = {
-  origin: 'https://main--cooper-weather-app.netlify.app',
+  origin: ['https://main--cooper-weather-app.netlify.app', 'http://localhost:3000'],
   optionsSuccessStatus: 200
 };
 
