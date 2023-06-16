@@ -8,11 +8,24 @@ const cors = require('cors');
 const app = express();
 
 const corsOptions = {
-  origin: 'https://main--cooper-weather-app.netlify.app',
+  origin: ['https://main--cooper-weather-app.netlify.app', 'http://localhost:3000'],
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://main--cooper-weather-app.netlify.app");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PATCH, DELETE, OPTIONS"
+  );
+  next();
+});
 
 const getWeather = require('./modules/weather');
 const getMovies = require('./modules/movies');
