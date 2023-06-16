@@ -7,7 +7,6 @@ async function getWeather(request, response, next) {
     let lon = request.query.lon;
 
     let weatherURL = `https://api.weatherbit.io/v2.0/current?&lat=${lat}&lon=${lon}&units=I&key=${process.env.WEATHER_API_KEY}`;
-    console.log(weatherURL);
     let weatherDataFromAxios = await axios.get(weatherURL);
     if (weatherDataFromAxios){
       let cityWeather = weatherDataFromAxios.data.data.map((date) => {
