@@ -3,7 +3,7 @@ const axios = require('axios');
 
 const cache = {};
 
-async function getMovie(request, response, next) {
+async function getMovies(request, response, next) {
   try {
     let movieKeywordFromFrontend = request.query.mov;
     let key = `${movieKeywordFromFrontend}-movie-about-location`;
@@ -32,7 +32,7 @@ async function getMovie(request, response, next) {
 }
 
 module.exports = {
-  getMovie
+  getMovies
 };
 
 
