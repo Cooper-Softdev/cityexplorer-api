@@ -3,6 +3,15 @@ const axios = require('axios');
 
 const cache = {};
 
+class Movie {
+  constructor(movie){
+    this.name = movie.title;
+    this.summary = movie.overview;
+    this.thumbnail = movie.poster_path;
+    this.rating = movie.vote_average;
+  }
+}
+
 async function getMovies(request, response, next) {
   try {
     let movieKeywordFromFrontend = request.query.mov;
@@ -92,13 +101,6 @@ module.exports = {
 //   }
 // }
 
-// class Movie {
-//   constructor(movie){
-//     this.name = movie.title;
-//     this.summary = movie.overview;
-//     this.thumbnail = movie.poster_path;
-//     this.rating = movie.vote_average;
-//   }
 // }
 
 // module.exports = getMovies;
