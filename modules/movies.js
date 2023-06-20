@@ -26,14 +26,20 @@ async function getMovies(request, response, next) {
       let movieURL = `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1&api_key=${process.env.MOVIE_API_KEY}&query=${movieKeywordFromFrontend}`;
 
       let movieDataFromAxios = await axios.get(movieURL);
-      let groomedMovieData = movieDataFromAxios.data.results.map(movieObj => new Movie(movieObj));
+      if (movieDataFromAxios.data.results) {
+        let sortedMovies = movieDataFromAxios.data.results.sort((a, b) => b.popularity - a.popularity);
+        let popularMovies = sortedMovies.slice(0, 5);
+        let groomedMovieData = popularMovies.map(movieObj => new Movie(movieObj));
 
-      cache[key] = {
-        timestamp: Date.now(),
-        data: groomedMovieData,
+        cache[key] = {
+          timestamp: Date.now(),
+          data: groomedMovieData,
+        };
+
+        response.status(200).send(groomedMovieData);
+      } else {
+        response.status(500).send('I can\'t seem to find anything!');
       }
-
-      response.status(200).send(groomedMovieData);
     }
   } catch (error) {
     next(error);
