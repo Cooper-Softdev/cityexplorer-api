@@ -2,6 +2,38 @@
 const axios = require('axios');
 
 let cache = {};
+
+async function getWeather(request, response, next) {
+  try {
+    let lat = request.query.lat;
+    let lon = request.query.lon;
+    let key = `${lat} ${lon} - Location`;
+    if(cache[key] && Date.now() - cache[key].timestamp < 2592000000){
+      console.log('Cache was hit!', cache);
+
+      response.status(200).send(cache[key].data);
+    } else {
+      console.log('No item in cache.');
+      let weatherURL = `https://api.weatherbit.io/v2.0/current?&lat=${lat}&lon=${lon}&units=I&key=${process.env.WEATHER_API_KEY}`;
+      let weatherDataFromAxios = await axios.get(weatherURL);
+      if (weatherDataFromAxios){
+        let cityWeather = weatherDataFromAxios.data.data.map((date) => {
+          return new Forecast(date);
+        });
+        cache[key] = {
+          timestamp: Date.now(),
+          data: cityWeather
+        };
+        response.status(200).send(cityWeather);
+      } else {
+        response.status(500).send('Location not found');
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
 class Forecast {
   constructor(cityObj) {
     this.date = cityObj.datatime;
@@ -17,36 +49,7 @@ class Forecast {
   }
 }
 
-async function getWeather(request, response, next) {
-  try {
-    let { lat, lon } = request.query;
-    let key = `${request.query.lat}-${request.query.lon}-lat-lon-location`;
-    if (cache[key] && (Date.now() - cache[key].timestamp) < 8.64e+7) {
-console.log('cache was hit!', cache);
-response.status(200).send(cache[key].data);
-
-    } else {
-      console.log('No item in cache');
-
-      let url = `http://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${process.env.WEATHER_API_KEY}`;
-      let { data } = await axios.get(url);
-      let forecastToSend = data.data.map(forecastOBJ => new Forecast(forecastOBJ));
-
-      cache[key] = {
-        timestamp: Date.now(),
-        data: forecastToSend,
-      }
-      response.status(200).send(forecastToSend);
-    }
-
-  } catch (error) {
-    next(error);
-  }
-}
-
-module.exports = {
-  getWeather
-};
+module.exports = getWeather;
 
 
 
